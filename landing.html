@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CuraTrack — Intelligent Care Coordination Platform</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/npm/@fontsource/fraunces@5/index.css');
+  @import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/index.css');
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest: #0A5240;
+    --forest-mid: #0F6E56;
+    --forest-light: #1D9E75;
+    --mint: #E1F5EE;
+    --mint-deep: #A8E8D4;
+    --cream: #FAF9F5;
+    --warm-white: #FFFEF9;
+    --ink: #111410;
+    --ink-mid: #2C3429;
+    --muted: #6B7568;
+    --border: rgba(10,82,64,0.12);
+    --coral: #C94A28;
+    --coral-light: #FAECE7;
+    --purple: #3C3489;
+    --purple-light: #EEEDFE;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ─────────────────────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 68px;
+    background: rgba(250,249,245,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .nav-logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--forest-light);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--forest); }
+
+  .nav-cta {
+    background: var(--forest);
+    color: white !important;
+    padding: 9px 22px;
+    border-radius: 100px;
+    font-weight: 500 !important;
+    font-size: 13px !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover { background: var(--forest-mid) !important; transform: translateY(-1px); }
+
+  /* ── HERO ────────────────────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 5vw 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 50%, rgba(29,158,117,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 10% 80%, rgba(10,82,64,0.05) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(10,82,64,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,82,64,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--mint);
+    border: 1px solid rgba(29,158,117,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px; font-weight: 500;
+    color: var(--forest-mid);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--forest-light);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -2px;
+    color: var(--ink);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--forest-mid);
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 16px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--forest);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  .btn-primary:hover { background: var(--forest-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,82,64,0.2); }
+
+  .btn-ghost {
+    color: var(--forest);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: gap 0.2s;
+  }
+
+  .btn-ghost:hover { gap: 10px; }
+
+  /* hero visual */
+  .hero-visual {
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .phone-mockup {
+    background: var(--ink);
+    border-radius: 36px;
+    padding: 18px;
+    max-width: 300px;
+    margin: 0 auto;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.06);
+    position: relative;
+  }
+
+  .phone-notch {
+    width: 80px; height: 24px;
+    background: var(--ink);
+    border-radius: 100px;
+    margin: 0 auto 12px;
+    position: relative; z-index: 1;
+  }
+
+  .phone-screen {
+    background: var(--warm-white);
+    border-radius: 24px;
+    overflow: hidden;
+    padding: 20px 16px;
+  }
+
+  .app-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .app-greeting { font-size: 11px; color: var(--muted); }
+  .app-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: var(--ink); }
+
+  .app-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--forest);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: white;
+  }
+
+  .app-alert {
+    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    color: white;
+  }
+
+  .app-alert-label { font-size: 9px; opacity: 0.7; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .app-alert-text { font-size: 13px; font-weight: 500; line-height: 1.3; }
+
+  .app-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .app-stat {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .app-stat-label { font-size: 9px; color: var(--muted); margin-bottom: 2px; }
+  .app-stat-val { font-family: 'Fraunces', serif; font-size: 20px; color: var(--forest); }
+
+  .app-meds { }
+  .app-meds-title { font-size: 10px; font-weight: 500; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .app-med {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-med:last-child { border-bottom: none; }
+
+  .med-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .med-info { flex: 1; }
+  .med-name { font-size: 11px; font-weight: 500; color: var(--ink); }
+  .med-time { font-size: 10px; color: var(--muted); }
+  .med-status { font-size: 10px; font-weight: 500; }
+  .med-done { color: var(--forest-light); }
+  .med-pending { color: var(--amber); }
+
+  /* floating cards */
+  .floating-cards {
+    position: absolute;
+    top: 50%; right: -40px;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  .float-card {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    font-size: 12px;
+    min-width: 160px;
+    animation: floatCard 4s ease-in-out infinite;
+  }
+
+  .float-card:nth-child(2) { animation-delay: 1s; }
+  .float-card:nth-child(3) { animation-delay: 2s; }
+
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .float-card-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .float-card-val { font-weight: 500; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+  .float-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* hero stats */
+  .hero-stats {
+    display: flex; gap: 40px;
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .hstat-val {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--forest);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hstat-label { font-size: 12px; color: var(--muted); }
+
+  /* ── SECTION SHARED ─────────────────────────────────────────────── */
+  section { padding: 100px 5vw; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500;
+    color: var(--forest-mid);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 16px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block; width: 24px; height: 1px;
+    background: var(--forest-light);
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 400;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  h2 em { font-style: italic; color: var(--forest-mid); }
+
+  .section-sub {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* ── PROBLEM STRIP ──────────────────────────────────────────────── */
+  .problem-strip {
+    background: var(--ink);
+    padding: 60px 5vw;
+  }
+
+  .problem-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .problem-item {
+    padding: 40px 32px;
+    background: var(--ink);
+    transition: background 0.3s;
+  }
+
+  .problem-item:hover { background: var(--ink-mid); }
+
+  .problem-num {
+    font-family: 'Fraunces', serif;
+    font-size: 42px; font-weight: 300;
+    color: var(--forest-light);
+    line-height: 1; margin-bottom: 8px;
+  }
+
+  .problem-label { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+  .problem-text { font-size: 15px; color: white; font-weight: 300; line-height: 1.5; }
+
+  /* ── USP SECTION ────────────────────────────────────────────────── */
+  .usp-section { background: var(--warm-white); }
+
+  .usp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+
+  .usp-card {
+    background: var(--warm-white);
+    padding: 48px 44px;
+    position: relative;
+    transition: background 0.3s;
+    overflow: hidden;
+  }
+
+  .usp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .usp-card.green::before { background: linear-gradient(90deg, var(--forest-light), transparent); }
+  .usp-card.coral::before { background: linear-gradient(90deg, var(--coral), transparent); }
+  .usp-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .usp-card.amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+
+  .usp-card:hover { background: var(--cream); }
+
+  .usp-num {
+    font-family: 'Fraunces', serif;
+    font-size: 64px; font-weight: 300;
+    line-height: 1;
+    margin-bottom: 20px;
+    opacity: 0.12;
+    position: absolute;
+    top: 24px; right: 32px;
+  }
+
+  .usp-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    font-size: 22px;
+  }
+
+  .usp-icon.green { background: var(--mint); }
+  .usp-icon.coral { background: var(--coral-light); }
+  .usp-icon.purple { background: var(--purple-light); }
+  .usp-icon.amber { background: var(--amber-light); }
+
+  .usp-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .usp-quote {
+    font-size: 15px; font-style: italic; font-weight: 300;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding-left: 16px;
+    border-left: 2px solid var(--border);
+  }
+
+  .usp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    font-size: 12px; font-weight: 400;
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+
+  .tag.green { background: var(--mint); color: var(--forest); }
+  .tag.coral { background: var(--coral-light); color: var(--coral); }
+  .tag.purple { background: var(--purple-light); color: var(--purple); }
+  .tag.amber { background: var(--amber-light); color: var(--amber); }
+
+  /* ── HOW IT WORKS ────────────────────────────────────────────────── */
+  .how-section { background: var(--cream); }
+
+  .steps-container {
+    margin-top: 64px;
+    position: relative;
+  }
+
+  .steps-line {
+    position: absolute;
+    top: 32px; left: calc(12.5% + 32px); right: calc(12.5% + 32px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--forest-light) 20%, var(--forest-light) 80%, transparent);
+    opacity: 0.3;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  .step-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 400;
+    position: relative; z-index: 1;
+  }
+
+  .step:nth-child(1) .step-circle { background: var(--mint); color: var(--forest); border: 2px solid rgba(29,158,117,0.3); }
+  .step:nth-child(2) .step-circle { background: var(--purple-light); color: var(--purple); border: 2px solid rgba(60,52,137,0.2); }
+  .step:nth-child(3) .step-circle { background: var(--coral-light); color: var(--coral); border: 2px solid rgba(201,74,40,0.2); }
+  .step:nth-child(4) .step-circle { background: var(--amber-light); color: var(--amber); border: 2px solid rgba(133,79,11,0.2); }
+
+  .step-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .step-desc { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.6; }
+
+  /* ── WHO IT'S FOR ────────────────────────────────────────────────── */
+  .for-section { background: var(--warm-white); }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .audience-card {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    background: var(--cream);
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .audience-card:hover {
+    border-color: rgba(29,158,117,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(10,82,64,0.08);
+  }
+
+  .audience-icon {
+    font-size: 28px; margin-bottom: 16px;
+    display: block;
+  }
+
+  .audience-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .audience-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.6; }
+
+  /* ── ARCHITECTURE SECTION ───────────────────────────────────────── */
+  .arch-section { background: var(--ink); color: white; }
+
+  .arch-section .section-eyebrow { color: var(--mint-deep); }
+  .arch-section .section-eyebrow::before { background: var(--forest-light); }
+  .arch-section h2 { color: white; }
+  .arch-section h2 em { color: var(--forest-light); }
+  .arch-section .section-sub { color: rgba(255,255,255,0.45); }
+
+  .arch-diagram {
+    margin-top: 64px;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 0;
+  }
+
+  /* Layer labels */
+  .arch-layer {
+    display: grid;
+    align-items: stretch;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .arch-layer-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.3);
+    padding: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+  }
+
+  .arch-row {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+  }
+
+  .arch-box {
+    flex: 1;
+    padding: 20px 20px;
+    border-radius: 0;
+    transition: all 0.25s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arch-box:hover { filter: brightness(1.15); }
+
+  .arch-box::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+
+  .arch-box:hover::after { background: rgba(255,255,255,0.03); }
+
+  .arch-box-title {
+    font-size: 13px; font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .arch-box-sub { font-size: 11px; opacity: 0.55; line-height: 1.4; }
+
+  /* Layer colors */
+  .layer-user .arch-box { background: rgba(29,158,117,0.18); border: 1px solid rgba(29,158,117,0.2); }
+  .layer-user .arch-box-title { color: var(--mint-deep); }
+
+  .layer-app .arch-box { background: rgba(60,52,137,0.2); border: 1px solid rgba(60,52,137,0.2); }
+  .layer-app .arch-box-title { color: #B5B0F0; }
+
+  .layer-ai .arch-box { background: rgba(201,74,40,0.15); border: 1px solid rgba(201,74,40,0.18); }
+  .layer-ai .arch-box-title { color: #F4A88A; }
+
+  .layer-data .arch-box { background: rgba(133,79,11,0.2); border: 1px solid rgba(133,79,11,0.2); }
+  .layer-data .arch-box-title { color: #F5C980; }
+
+  .layer-infra .arch-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+  .layer-infra .arch-box-title { color: rgba(255,255,255,0.7); }
+
+  .arch-arrows {
+    display: flex; justify-content: center; gap: 120px;
+    padding: 8px 0;
+    opacity: 0.2;
+  }
+
+  .arch-arrow { font-size: 16px; color: var(--forest-light); }
+
+  /* first/last rounded corners */
+  .arch-layer:first-child .arch-row .arch-box:first-child { border-radius: 16px 0 0 0; }
+  .arch-layer:first-child .arch-row .arch-box:last-child { border-radius: 0 16px 0 0; }
+  .arch-layer:last-child .arch-row .arch-box:first-child { border-radius: 0 0 0 16px; }
+  .arch-layer:last-child .arch-row .arch-box:last-child { border-radius: 0 0 16px 0; }
+
+  /* ── TESTIMONIAL / TRUST ────────────────────────────────────────── */
+  .trust-section { background: var(--cream); }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .trust-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+  }
+
+  .trust-quote {
+    font-family: 'Fraunces', serif;
+    font-size: 17px; font-weight: 300; font-style: italic;
+    line-height: 1.6; color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .trust-author { display: flex; align-items: center; gap: 12px; }
+
+  .trust-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: white;
+  }
+
+  .trust-name { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .trust-role { font-size: 12px; color: var(--muted); }
+
+  /* ── CTA ─────────────────────────────────────────────────────────── */
+  .cta-section {
+    background: var(--forest);
+    padding: 100px 5vw;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 80% at 20% 50%, rgba(255,255,255,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(255,255,255,0.03) 0%, transparent 70%);
+  }
+
+  .cta-section h2 { color: white; letter-spacing: -2px; margin-bottom: 16px; }
+  .cta-section h2 em { color: var(--mint-deep); }
+
+  .cta-sub { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.6); margin-bottom: 48px; }
+
+  .cta-actions { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  .btn-white {
+    background: white;
+    color: var(--forest);
+    padding: 16px 36px;
+    border-radius: 100px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.2); }
+
+  .btn-outline-white {
+    border: 1.5px solid rgba(255,255,255,0.35);
+    color: white;
+    padding: 15px 32px;
+    border-radius: 100px;
+    font-size: 15px; font-weight: 400;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-outline-white:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.06); }
+
+  /* ── FOOTER ──────────────────────────────────────────────────────── */
+  footer {
+    background: var(--ink-mid);
+    padding: 60px 5vw 36px;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+  }
+
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px; margin-bottom: 48px;
+  }
+
+  .footer-brand {}
+  .footer-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; color: white; font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .footer-tagline { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.35); }
+
+  .footer-col-title { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+  .footer-bottom {
+    max-width: 1200px; margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: rgba(255,255,255,0.25);
+  }
+
+  /* ── ANIMATIONS ──────────────────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .hero-visual { display: none; }
+    .problem-inner { grid-template-columns: repeat(2, 1fr); }
+    .usp-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps-line { display: none; }
+    .audience-grid { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .nav-links { display: none; }
+    .arch-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    CuraTrack
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#for">Who it's for</a>
+    <a href="#" class="nav-cta">Request Demo →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner container">
+    <div>
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Now in early access · Bharat-first healthcare
+      </div>
+      <h1>Health that <em>predicts</em><br>before it fails</h1>
+      <p class="hero-desc">CuraTrack unifies patients, doctors, and families on one AI-powered platform. It doesn't just track — it detects risk, triggers responses, and works even offline.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Get Early Access →</a>
+        <a href="#how" class="btn-ghost">See how it works ↓</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hstat-val">101M+</div>
+          <div class="hstat-label">Diabetics in India</div>
+        </div>
+        <div>
+          <div class="hstat-val">4x</div>
+          <div class="hstat-label">Faster emergency response</div>
+        </div>
+        <div>
+          <div class="hstat-val">100%</div>
+          <div class="hstat-label">Offline capable</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone Mockup -->
+    <div class="hero-visual" style="position:relative;">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-greeting">Good morning,</div>
+              <div class="app-name">Rajan Kumar</div>
+            </div>
+            <div class="app-avatar">RK</div>
+          </div>
+          <div class="app-alert">
+            <div class="app-alert-label">AI Health Insight</div>
+            <div class="app-alert-text">Blood pressure trending high for 3 days. Consider scheduling a follow-up.</div>
+          </div>
+          <div class="app-stats">
+            <div class="app-stat">
+              <div class="app-stat-label">Adherence</div>
+              <div class="app-stat-val">94%</div>
+            </div>
+            <div class="app-stat">
+              <div class="app-stat-label">Risk Score</div>
+              <div class="app-stat-val" style="color: var(--amber);">Low</div>
+            </div>
+          </div>
+          <div class="app-meds">
+            <div class="app-meds-title">Today's Medications</div>
+            <div class="app-med">
+              <div class="med-dot" style="background:#1D9E75;"></div>
+              <div class="med-info">
+                <div class="med-name">Metformin 500mg</div>
+                <div class="med-time">8:00 AM</div>
+              </div>
+              <div class="med-status med-done">✓ Done</div>
+            </div>
+            <div class="app-med">
+              <div class="med-dot" style="background:#F5C020;"></div>
+              <div class="med-info">
+                <div class="med-name">Amlodipine 5mg</div>
+                <div class="med-time">2:00 PM</div>
+              </div>
+              <div class="med-status med-pending">Pending</div>
+            </div>
+            <div class="app-med">
+              <div class="med-dot" style="background:#1D9E75;"></div>
+              <div class="med-info">
+                <div class="med-name">Atorvastatin 10mg</div>
+                <div class="med-time">9:00 PM</div>
+              </div>
+              <div class="med-status med-done">✓ Done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating cards -->
+      <div class="floating-cards">
+        <div class="float-card">
+          <div class="float-card-label">Caregiver Alert</div>
+          <div class="float-card-val"><div class="float-dot" style="background:#C94A28;"></div> SOS sent to Dr. Priya</div>
+        </div>
+        <div class="float-card">
+          <div class="float-card-label">AI Summary ready</div>
+          <div class="float-card-val"><div class="float-dot" style="background:#1D9E75;"></div> 3-min patient brief</div>
+        </div>
+        <div class="float-card">
+          <div class="float-card-label">Offline Sync</div>
+          <div class="float-card-val"><div class="float-dot" style="background:#854F0B;"></div> 12 records synced</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM NUMBERS -->
+<div class="problem-strip">
+  <div class="problem-inner">
+    <div class="problem-item">
+      <div class="problem-num">220M</div>
+      <div class="problem-label">Hypertension patients</div>
+      <div class="problem-text">Most are unmonitored between doctor visits</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">67%</div>
+      <div class="problem-label">Medication non-adherence</div>
+      <div class="problem-text">In chronic disease patients across rural India</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">28 min</div>
+      <div class="problem-label">Avg. emergency response</div>
+      <div class="problem-text">Precious time lost without pre-shared patient data</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">500M+</div>
+      <div class="problem-label">Patients underserved</div>
+      <div class="problem-text">No app designed for offline, low-literacy users</div>
+    </div>
+  </div>
+</div>
+
+<!-- USP / FEATURES -->
+<section class="usp-section" id="features">
+  <div class="container">
+    <div class="section-eyebrow reveal">Four unfair advantages</div>
+    <h2 class="reveal">What no <em>standard</em><br>health app can do</h2>
+    <p class="section-sub reveal">Built from scratch for India's real healthcare challenges — not a Western product localized for Bharat.</p>
+
+    <div class="usp-grid reveal">
+      <div class="usp-card green">
+        <div class="usp-num">01</div>
+        <div class="usp-icon green">🧠</div>
+        <div class="usp-title">AI Preventive Engine</div>
+        <p class="usp-quote">CuraTrack doesn't just record health data — it predicts and prevents health crises.</p>
+        <div class="usp-tags">
+          <span class="tag green">Risk detection</span>
+          <span class="tag green">Pattern analysis</span>
+          <span class="tag green">AI summaries</span>
+          <span class="tag green">Auto follow-ups</span>
+        </div>
+      </div>
+
+      <div class="usp-card coral">
+        <div class="usp-num">02</div>
+        <div class="usp-icon coral">🚨</div>
+        <div class="usp-title">Auto-Escalating SOS</div>
+        <p class="usp-quote">From missed medication to ambulance dispatch — CuraTrack responds automatically.</p>
+        <div class="usp-tags">
+          <span class="tag coral">SOS dispatch</span>
+          <span class="tag coral">Instant history share</span>
+          <span class="tag coral">Pre-arrival summary</span>
+        </div>
+      </div>
+
+      <div class="usp-card purple">
+        <div class="usp-num">03</div>
+        <div class="usp-icon purple">👨‍👩‍👧</div>
+        <div class="usp-title">Caregiver Ecosystem</div>
+        <p class="usp-quote">Patients, doctors, and families connected in one intelligent care network.</p>
+        <div class="usp-tags">
+          <span class="tag purple">Family dashboard</span>
+          <span class="tag purple">Remote monitoring</span>
+          <span class="tag purple">Voice logging</span>
+        </div>
+      </div>
+
+      <div class="usp-card amber">
+        <div class="usp-num">04</div>
+        <div class="usp-icon amber">🌍</div>
+        <div class="usp-title">Rural & Offline-Ready</div>
+        <p class="usp-quote">Built for Bharat — works where others don't. No internet? No problem.</p>
+        <div class="usp-tags">
+          <span class="tag amber">Offline sync</span>
+          <span class="tag amber">Elder-friendly UI</span>
+          <span class="tag amber">ABDM-ready</span>
+          <span class="tag amber">Voice input</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-eyebrow reveal">How it works</div>
+    <h2 class="reveal">Four steps from <em>logging</em><br>to life-saving</h2>
+    <p class="section-sub reveal">A continuous care loop that catches what doctors can't see between visits.</p>
+
+    <div class="steps-container reveal">
+      <div class="steps-line"></div>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-circle">1</div>
+          <div class="step-title">Patient logs</div>
+          <div class="step-desc">Medications, vitals, and symptoms via app, voice note, or SMS — even offline</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">2</div>
+          <div class="step-title">AI analyzes</div>
+          <div class="step-desc">Detects patterns, flags risk, generates a patient brief for the next consult</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">3</div>
+          <div class="step-title">Care responds</div>
+          <div class="step-desc">Caregivers are alerted, follow-ups are suggested, SOS is escalated if needed</div>
+        </div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <div class="step-title">Doctor reviews</div>
+          <div class="step-desc">Gets a 3-minute AI-generated brief before saying hello — no chart hunting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="arch-section" id="architecture">
+  <div class="container">
+    <div class="section-eyebrow reveal">System architecture</div>
+    <h2 class="reveal">Built on a <em>layered</em><br>intelligent foundation</h2>
+    <p class="section-sub reveal">Every layer is designed for resilience, privacy, and offline-first operation across India's connectivity spectrum.</p>
+
+    <div class="arch-diagram reveal" style="margin-top:64px;">
+
+      <!-- Layer 1: User Interfaces -->
+      <div class="arch-layer layer-user">
+        <div style="display:flex; align-items:stretch; gap:2px;">
+          <div class="arch-layer-label">Interfaces</div>
+          <div class="arch-row" style="flex:1;">
+            <div class="arch-box" style="border-radius:16px 0 0 0;">
+              <div class="arch-box-title">Patient App</div>
+              <div class="arch-box-sub">Android / iOS / PWA · Offline-first</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Caregiver Dashboard</div>
+              <div class="arch-box-sub">Real-time monitoring · Alert feed</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Doctor Portal</div>
+              <div class="arch-box-sub">AI briefs · Consult history</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Voice & SMS Interface</div>
+              <div class="arch-box-sub">IVR · WhatsApp · Offline fallback</div>
+            </div>
+            <div class="arch-box" style="border-radius:0 16px 0 0;">
+              <div class="arch-box-title">Admin Console</div>
+              <div class="arch-box-sub">Ops · Analytics · Hospital mgmt</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-arrows">
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+      </div>
+
+      <!-- Layer 2: Application -->
+      <div class="arch-layer layer-app">
+        <div style="display:flex; align-items:stretch; gap:2px;">
+          <div class="arch-layer-label">Application</div>
+          <div class="arch-row" style="flex:1;">
+            <div class="arch-box">
+              <div class="arch-box-title">Auth & Identity</div>
+              <div class="arch-box-sub">ABHA ID · OTP · Role-based access</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Medication Engine</div>
+              <div class="arch-box-sub">Schedules · Reminders · Adherence</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Alert Orchestrator</div>
+              <div class="arch-box-sub">Escalation rules · Multi-channel notify</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Sync Service</div>
+              <div class="arch-box-sub">Offline queue · Conflict resolution</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Emergency SOS Engine</div>
+              <div class="arch-box-sub">Auto-dispatch · History bundle · ETA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-arrows">
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+      </div>
+
+      <!-- Layer 3: AI -->
+      <div class="arch-layer layer-ai">
+        <div style="display:flex; align-items:stretch; gap:2px;">
+          <div class="arch-layer-label">AI Layer</div>
+          <div class="arch-row" style="flex:1;">
+            <div class="arch-box">
+              <div class="arch-box-title">Risk Prediction Model</div>
+              <div class="arch-box-sub">Worsening pattern detection · Vitals trend</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">NLP Summary Engine</div>
+              <div class="arch-box-sub">Doctor briefs · Voice-to-log · Symptom parse</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Adherence Intelligence</div>
+              <div class="arch-box-sub">Behavioral nudges · Miss prediction</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Diagnostic Assist</div>
+              <div class="arch-box-sub">Drug interaction check · Dosage flags</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Population Analytics</div>
+              <div class="arch-box-sub">Cohort trends · Hospital-level insights</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-arrows">
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+      </div>
+
+      <!-- Layer 4: Data -->
+      <div class="arch-layer layer-data">
+        <div style="display:flex; align-items:stretch; gap:2px;">
+          <div class="arch-layer-label">Data</div>
+          <div class="arch-row" style="flex:1;">
+            <div class="arch-box">
+              <div class="arch-box-title">Patient Health Records</div>
+              <div class="arch-box-sub">FHIR R4 · Encrypted at rest</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Medication Database</div>
+              <div class="arch-box-sub">50,000+ drugs · Indian formulary</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Event & Audit Log</div>
+              <div class="arch-box-sub">Immutable · Compliance · Trace</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Offline Local Store</div>
+              <div class="arch-box-sub">SQLite · End-to-end encrypted</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Analytics Warehouse</div>
+              <div class="arch-box-sub">Anonymized · Aggregated · BI-ready</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-arrows">
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+        <span class="arch-arrow">↕</span>
+      </div>
+
+      <!-- Layer 5: Infra -->
+      <div class="arch-layer layer-infra">
+        <div style="display:flex; align-items:stretch; gap:2px;">
+          <div class="arch-layer-label">Infrastructure</div>
+          <div class="arch-row" style="flex:1;">
+            <div class="arch-box" style="border-radius:0 0 0 16px;">
+              <div class="arch-box-title">AWS / Azure India Region</div>
+              <div class="arch-box-sub">Data residency · MeitY compliant</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">ABDM / NHA Integration</div>
+              <div class="arch-box-sub">ABHA · UHID · HFR · HIU/HIP</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Telecom Gateway</div>
+              <div class="arch-box-sub">BSNL · Jio · Airtel · SMS fallback</div>
+            </div>
+            <div class="arch-box">
+              <div class="arch-box-title">Security & Compliance</div>
+              <div class="arch-box-sub">ISO 27001 · DISHA · Zero-trust</div>
+            </div>
+            <div class="arch-box" style="border-radius:0 0 16px 0;">
+              <div class="arch-box-title">Emergency Services API</div>
+              <div class="arch-box-sub">108 integration · Hospital network</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="for-section" id="for">
+  <div class="container">
+    <div class="section-eyebrow reveal">Who it's built for</div>
+    <h2 class="reveal">Every patient, <em>every</em> context</h2>
+    <p class="section-sub reveal">From urban clinics to remote villages — CuraTrack adapts to where care actually happens.</p>
+
+    <div class="audience-grid reveal">
+      <div class="audience-card">
+        <span class="audience-icon">👴</span>
+        <div class="audience-title">Elderly patients</div>
+        <div class="audience-desc">Simple UI, large text, voice logging, and automatic caregiver alerts if something seems off</div>
+      </div>
+      <div class="audience-card">
+        <span class="audience-icon">💊</span>
+        <div class="audience-title">Chronic disease</div>
+        <div class="audience-desc">Diabetes, hypertension, cardiac — built for the long haul, not just one-time checkups</div>
+      </div>
+      <div class="audience-card">
+        <span class="audience-icon">🌾</span>
+        <div class="audience-title">Rural communities</div>
+        <div class="audience-desc">Offline-first, ABDM-integrated, runs on ₹6,000 Android phones and 2G networks</div>
+      </div>
+      <div class="audience-card">
+        <span class="audience-icon">🏥</span>
+        <div class="audience-title">Hospitals & clinics</div>
+        <div class="audience-desc">Bulk patient monitoring, AI-ready summaries, and emergency alert infrastructure</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="trust-section">
+  <div class="container">
+    <div class="section-eyebrow reveal">Early voices</div>
+    <h2 class="reveal">What our <em>early partners</em><br>are saying</h2>
+
+    <div class="trust-grid reveal">
+      <div class="trust-card">
+        <div class="trust-quote">"Finally a platform that understands Indian healthcare isn't just a market — it's a completely different problem. The offline-first design alone puts it ahead of everything I've seen."</div>
+        <div class="trust-author">
+          <div class="trust-avatar" style="background: var(--forest);">DR</div>
+          <div>
+            <div class="trust-name">Dr. Ramesh Iyer</div>
+            <div class="trust-role">Senior Cardiologist, Apollo Chennai</div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-quote">"My father is diabetic and lives alone in Tirunelveli. The caregiver dashboard means I can see exactly when he's taken his medication — without calling him every day."</div>
+        <div class="trust-author">
+          <div class="trust-avatar" style="background: var(--purple);">SK</div>
+          <div>
+            <div class="trust-name">Supriya K.</div>
+            <div class="trust-role">Software engineer, Bengaluru · CuraTrack beta user</div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-quote">"The pre-arrival patient brief is extraordinary. We know the patient's full medication history before they even walk through the emergency room door. It changes triage entirely."</div>
+        <div class="trust-author">
+          <div class="trust-avatar" style="background: var(--coral);">MP</div>
+          <div>
+            <div class="trust-name">Dr. Meghna Pillai</div>
+            <div class="trust-role">Emergency Medicine, AIIMS Delhi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="container" style="position:relative; z-index:1;">
+    <h2>Ready to <em>predict</em><br>the next health crisis?</h2>
+    <p class="cta-sub">Join 200+ early partners building India's intelligent care network.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-white">Get Early Access →</a>
+      <a href="#" class="btn-outline-white">Talk to the team</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">CuraTrack</div>
+      <div class="footer-tagline">Intelligent Care Coordination Platform for India's next 500 million patients. Predict. Prevent. Protect.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Product</div>
+      <ul class="footer-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">How it works</a></li>
+        <li><a href="#">Architecture</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">For</div>
+      <ul class="footer-links">
+        <li><a href="#">Patients</a></li>
+        <li><a href="#">Caregivers</a></li>
+        <li><a href="#">Doctors</a></li>
+        <li><a href="#">Hospitals</a></li>
+        <li><a href="#">Government</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Press kit</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CuraTrack Health Technologies Pvt. Ltd. · Made in India 🇮🇳</span>
+    <span>Privacy · Terms · ABDM Compliant</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 40 ? 'rgba(10,82,64,0.15)' : 'rgba(10,82,64,0.08)';
+  });
+</script>
+</body>
+</html>
